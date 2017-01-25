@@ -100,49 +100,49 @@ def Generate_checkset(N_number_of_spin_sites):
     np.save(Checkset_FILE %N_number_of_spin_sites,out)
     check_set=[]
 
+if calculate_KL==True :
+    if (os.path.exists(Checkset_FILE %Spin_number)):
+        print("------   check_set.npy already exist\n")
+        check_sigma_set =np.load(Checkset_FILE %Spin_number)
+    else:
+        print("This is the 1st time you run this code,we need few minutes to generate check_set_N.npy,please wait\n")
+        print('\n')
+        print("--------- Generating check_set,please wait........\n")
+        Generate_checkset(Spin_number)
+        print("checkset.npy saved successfully\n")
+        check_sigma_set =np.load(Checkset_FILE %Spin_number)
 
-if (os.path.exists(Checkset_FILE %Spin_number)):
-    print("------   check_set.npy already exist\n")
-    check_sigma_set =np.load(Checkset_FILE %Spin_number)
-else:
-    print("This is the 1st time you run this code,we need few minutes to generate check_set_N.npy,please wait\n")
-    print('\n')
-    print("--------- Generating check_set,please wait........\n")
-    Generate_checkset(Spin_number)
-    print("checkset.npy saved successfully\n")
-    check_sigma_set =np.load(Checkset_FILE %Spin_number)
 
 
-
-if (os.path.exists(CSV_FILE %Spin_number)):
-    print("------   MC_Dec_sample.csv already exist\n")
-    print("\n")
-    H_data=rbm_kl.calculate_H_data(CSV_FILE %Spin_number)  
-    print("############################################\n")
-    print("------      The H_data is: ",H_data)
-    print("############################################\n")
-    print("\n")
-else:
-    print("This is the 1st time you run this code,we need few minutes to generate MC_Dec_sample.csv,please wait\n")
-    print('\n')
-    print("--------- Generating csv,please wait........\n")
-    Dec_sample=[]
-    for i in range(train_set_len):
-        Dec_sample.append(Return_SpinarrayToDec(trsigma[i]))
-    Dec_sample=np.asarray(Dec_sample)
-    outfile=(CSV_FILE %Spin_number)
-    with open(outfile, 'wb+') as fout:
-    	np.savetxt(fout, Dec_sample,fmt='%d') 
-    	fout.seek(-1, 2)
-    	fout.truncate()
-    Dec_sample=[]
-    print("MC_Dec_sample_%d_spins.csv saved successfully\n" %Spin_number)
-    H_data=rbm_kl.calculate_H_data(CSV_FILE %Spin_number)
-    print("\n") 
-    print("############################################\n")
-    print("------      The H_data is: ",H_data)
-    print("############################################\n")
-    print("\n")
+    if (os.path.exists(CSV_FILE %Spin_number)):
+        print("------   MC_Dec_sample.csv already exist\n")
+        print("\n")
+        H_data=rbm_kl.calculate_H_data(CSV_FILE %Spin_number)  
+        print("############################################\n")
+        print("------      The H_data is: ",H_data)
+        print("############################################\n")
+        print("\n")
+    else:
+        print("This is the 1st time you run this code,we need few minutes to generate MC_Dec_sample.csv,please wait\n")
+        print('\n')
+        print("--------- Generating csv,please wait........\n")
+        Dec_sample=[]
+        for i in range(train_set_len):
+            Dec_sample.append(Return_SpinarrayToDec(trsigma[i]))
+        Dec_sample=np.asarray(Dec_sample)
+        outfile=(CSV_FILE %Spin_number)
+        with open(outfile, 'wb+') as fout:
+        	np.savetxt(fout, Dec_sample,fmt='%d') 
+        	fout.seek(-1, 2)
+        	fout.truncate()
+        Dec_sample=[]
+        print("MC_Dec_sample_%d_spins.csv saved successfully\n" %Spin_number)
+        H_data=rbm_kl.calculate_H_data(CSV_FILE %Spin_number)
+        print("\n") 
+        print("############################################\n")
+        print("------      The H_data is: ",H_data)
+        print("############################################\n")
+        print("\n")
 #-----------------------------------------------------------------------------------------------------------------------#
 #-----------------------------------------------------------------------------------------------------------------------#
 #-----------------------------------------------------------------------------------------------------------------------#
@@ -163,7 +163,9 @@ else:
 print("####  Please make sure all initial file are correct,Now we start. ####\n")
 time.sleep(2)
 
-check_set_len=check_sigma_set.shape[0]
+
+if calculate_KL==True :
+    check_set_len=check_sigma_set.shape[0]
 
 
 def sample_prob(probs):
